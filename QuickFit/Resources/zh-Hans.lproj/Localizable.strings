@@ -1,0 +1,209 @@
+/*
+  Localizable.strings (Chinese Simplified)
+  QuickFit
+*/
+
+// MARK: - Common
+"app_name" = "快穿";
+"cancel" = "取消";
+"confirm" = "确定";
+"save" = "保存";
+"delete" = "删除";
+"done" = "完成";
+"add" = "添加";
+"edit" = "编辑";
+"share" = "分享";
+"ok" = "好的";
+
+// MARK: - Tab Bar
+"tab_tryon" = "试衣";
+"tab_wardrobe" = "衣柜";
+"tab_collection" = "收藏";
+"tab_profile" = "我的";
+
+// MARK: - Login
+"login_title" = "快穿";
+"login_subtitle" = "QuickFit - AI智能虚拟试衣";
+"login_wechat" = "微信登录";
+"login_test" = "测试登录";
+"login_agreement" = "登录即表示同意《用户协议》和《隐私政策》";
+"login_agreement_prefix" = "我已阅读并同意";
+"login_agreement_and" = "和";
+"login_user_agreement" = "《用户协议》";
+"login_privacy_policy" = "《隐私政策》";
+"login_phone" = "手机号登录";
+"login_phone_title" = "手机号登录";
+"login_phone_subtitle" = "使用中国大陆手机号快捷登录";
+"login_phone_number" = "手机号";
+"login_phone_placeholder" = "请输入11位手机号";
+"login_verification_code" = "验证码";
+"login_code_placeholder" = "请输入6位验证码";
+"login_send_code" = "获取验证码";
+"login_resend_code" = "重新获取";
+"login_submit" = "登录";
+"login_phone_hint" = "未注册的手机号将自动创建账号";
+"login_phone_user" = "手机用户%@";
+"login_invalid_phone" = "请输入正确的手机号";
+"login_invalid_code" = "请输入6位验证码";
+"login_send_code_failed" = "验证码发送失败，请稍后重试";
+"login_wrong_code" = "验证码错误，请重新输入";
+"login_failed" = "登录失败，请稍后重试";
+"login_wechat_unavailable" = "微信登录暂不可用，请使用手机号登录";
+"login_apple" = "Apple 登录";
+"login_apple_user" = "Apple 用户";
+"login_apple_failed" = "Apple 登录失败";
+
+// MARK: - Try On
+"tryon_title" = "AI试衣";
+"tryon_my_image" = "我的形象";
+"tryon_setup_image" = "设置我的形象";
+"tryon_setup_image_hint" = "请先在「我的」页面上传全身照";
+"tryon_select_clothing" = "选择服装";
+"tryon_from_wardrobe" = "从衣柜选";
+"tryon_upload_image" = "上传图片";
+"tryon_start" = "开始试衣";
+"tryon_generating" = "AI生成中...";
+"tryon_result" = "试衣效果";
+"tryon_favorite" = "收藏";
+"tryon_favorited" = "已收藏";
+"tryon_save_success" = "保存成功";
+"tryon_save_success_msg" = "图片已保存到相册";
+"tryon_favorite_success" = "收藏成功";
+"tryon_favorite_success_msg" = "穿搭已收藏到收藏夹";
+"tryon_add_to_wardrobe" = "添加到衣柜";
+"tryon_add_to_wardrobe_msg" = "这件衣服还不在你的衣柜里，是否添加到衣柜后再收藏？";
+"tryon_add_and_favorite" = "添加并收藏";
+"tryon_from_wardrobe_label" = "来自衣柜: %@";
+"tryon_setup_alert_title" = "设置形象";
+"tryon_setup_alert_go" = "去设置";
+"tryon_setup_alert_msg" = "请先在「我的」页面上传全身照，用于AI试衣";
+
+// MARK: - Wardrobe
+"wardrobe_title" = "我的衣柜";
+"wardrobe_empty" = "还没有%@";
+"wardrobe_add" = "添加%@";
+"wardrobe_add_title" = "添加衣物";
+"wardrobe_photo" = "照片";
+"wardrobe_select_photo" = "选择照片";
+"wardrobe_info" = "信息";
+"wardrobe_name_placeholder" = "名称（可选）";
+"wardrobe_category" = "类别";
+"wardrobe_detail" = "衣物详情";
+"wardrobe_remove" = "从衣柜移除";
+"wardrobe_added_on" = "添加于 %@";
+"wardrobe_go_add" = "去「衣柜」添加吧";
+
+// MARK: - Clothing Categories
+"category_tops" = "上衣";
+"category_bottoms" = "裤子";
+"category_dresses" = "裙子";
+"category_outerwear" = "外套";
+"category_shoes" = "鞋子";
+"category_accessories" = "配饰";
+
+// MARK: - Collection
+"collection_title" = "我的收藏";
+"collection_empty" = "还没有收藏";
+"collection_empty_hint" = "试衣后点击收藏按钮\n将喜欢的穿搭保存到这里";
+"collection_outfit" = "穿搭收藏";
+"collection_outfit_detail" = "穿搭详情";
+"collection_outfit_prefix" = "穿搭 #%@";
+"collection_items_count" = "包含 %d 件衣物";
+"collection_unfavorite" = "取消收藏";
+
+// MARK: - Profile
+"profile_title" = "我的";
+"profile_user" = "用户";
+"profile_wechat_user" = "微信用户";
+"profile_my_image" = "我的形象";
+"profile_image_set" = "已设置";
+"profile_upload_photo" = "上传全身照";
+"profile_upload_hint" = "用于AI试衣，建议正面全身照";
+"profile_change_photo" = "更换照片";
+"profile_image_section" = "试衣形象";
+"profile_image_footer" = "上传全身照后，试衣时将自动使用此照片";
+"profile_body_data" = "身体数据";
+"profile_body_data_hint" = "填写身体数据可提升试衣效果";
+"profile_body_section" = "个人信息（可选）";
+"profile_body_footer" = "填写身高、体重、三维数据，AI将根据你的身材生成更真实的试衣效果";
+"profile_data_section" = "数据";
+"profile_history" = "试衣记录";
+"profile_wardrobe" = "衣柜";
+"profile_wardrobe_count" = "%d 件";
+"profile_collection" = "收藏";
+"profile_collection_count" = "%d 套";
+"profile_settings_section" = "设置";
+"profile_settings" = "设置";
+"profile_about_section" = "关于";
+"profile_version" = "版本";
+"profile_privacy" = "隐私政策";
+"profile_agreement" = "用户协议";
+"profile_logout" = "退出登录";
+"profile_photo_source" = "选择照片来源";
+"profile_take_photo" = "拍照";
+"profile_from_album" = "从相册选择";
+"profile_height" = "身高";
+"profile_weight" = "体重";
+"profile_height_label" = "身高: %d cm";
+"profile_weight_label" = "体重: %d kg";
+"profile_measurements" = "三维: %@";
+
+// MARK: - Body Info
+"body_info_title" = "身体数据";
+"body_info_basic" = "基本信息";
+"body_info_gender" = "性别";
+"body_info_gender_unselected" = "未选择";
+"body_info_height_weight" = "身高体重";
+"body_info_measurements" = "三维数据";
+"body_info_bust" = "胸围";
+"body_info_waist" = "腰围";
+"body_info_hips" = "臀围";
+"body_info_measurements_hint" = "三维数据帮助AI更准确地模拟服装在你身上的效果";
+"body_info_how_to" = "如何测量？";
+"body_info_bust_tip" = "• 胸围：经过胸部最丰满处水平测量一圈";
+"body_info_waist_tip" = "• 腰围：经过腰部最细处水平测量一圈";
+"body_info_hips_tip" = "• 臀围：经过臀部最丰满处水平测量一圈";
+
+// MARK: - Gender
+"gender_male" = "男";
+"gender_female" = "女";
+"gender_other" = "其他";
+
+// MARK: - Settings
+"settings_title" = "设置";
+"settings_notifications" = "通知";
+"settings_push" = "推送通知";
+"settings_storage" = "存储";
+"settings_auto_save" = "自动保存试衣结果";
+"settings_cache" = "缓存";
+"settings_clear_cache" = "清除缓存";
+"settings_language" = "语言";
+"settings_language_title" = "语言设置";
+"settings_language_zh" = "简体中文";
+"settings_language_en" = "English";
+"settings_language_system" = "跟随系统";
+
+// MARK: - History
+"history_title" = "试衣记录";
+"history_empty" = "暂无试衣记录";
+
+// MARK: - Clothing Image Section
+"clothing_image_section" = "服装图片";
+"add_to_wardrobe_section" = "添加到衣柜";
+"add_to_wardrobe_hint" = "添加到衣柜后，这套穿搭将被收藏";
+
+// MARK: - Select Clothing
+"select_clothing_title" = "选择服装";
+
+// MARK: - Errors
+"error_invalid_url" = "无效的请求地址";
+"error_network" = "网络错误：%@";
+"error_decoding" = "数据解析错误";
+"error_server" = "服务器错误：%@";
+"error_unauthorized" = "未授权，请重新登录";
+
+// MARK: - Measurements
+"measurements_not_filled" = "未填写";
+"measurements_bust" = "胸围%d";
+"measurements_waist" = "腰围%d";
+"measurements_hips" = "臀围%d";

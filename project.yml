@@ -1,0 +1,52 @@
+# XcodeGen 项目配置文件
+# 使用方法: brew install xcodegen && xcodegen generate
+
+name: QuickFit
+options:
+  bundleIdPrefix: com.yourcompany
+  deploymentTarget:
+    iOS: "16.0"
+  xcodeVersion: "15.0"
+  generateEmptyDirectories: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    TARGETED_DEVICE_FAMILY: "1,2"
+    INFOPLIST_FILE: QuickFit/Info.plist
+    DEVELOPMENT_TEAM: YOUR_TEAM_ID
+
+targets:
+  QuickFit:
+    type: application
+    platform: iOS
+    sources:
+      - path: QuickFit
+        excludes:
+          - "*.plist"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.yourcompany.quickfit
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "6"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        CODE_SIGN_STYLE: Automatic
+
+    postCompileScripts:
+      - script: |
+          # SwiftLint (可选)
+          # if which swiftlint > /dev/null; then
+          #   swiftlint
+          # fi
+        name: SwiftLint
+        basedOnDependencyAnalysis: false
+
+schemes:
+  QuickFit:
+    build:
+      targets:
+        QuickFit: all
+    run:
+      config: Debug
+    archive:
+      config: Release

@@ -1,0 +1,209 @@
+/*
+  Localizable.strings (English)
+  QuickFit
+*/
+
+// MARK: - Common
+"app_name" = "QuickFit";
+"cancel" = "Cancel";
+"confirm" = "Confirm";
+"save" = "Save";
+"delete" = "Delete";
+"done" = "Done";
+"add" = "Add";
+"edit" = "Edit";
+"share" = "Share";
+"ok" = "OK";
+
+// MARK: - Tab Bar
+"tab_tryon" = "Try On";
+"tab_wardrobe" = "Wardrobe";
+"tab_collection" = "Favorites";
+"tab_profile" = "Profile";
+
+// MARK: - Login
+"login_title" = "QuickFit";
+"login_subtitle" = "AI Virtual Try-On";
+"login_wechat" = "Login with WeChat";
+"login_test" = "Test Login";
+"login_agreement" = "By logging in, you agree to the Terms of Service and Privacy Policy";
+"login_agreement_prefix" = "I have read and agree to";
+"login_agreement_and" = "and";
+"login_user_agreement" = "Terms of Service";
+"login_privacy_policy" = "Privacy Policy";
+"login_phone" = "Phone Login";
+"login_phone_title" = "Phone Login";
+"login_phone_subtitle" = "Login with China mainland phone number";
+"login_phone_number" = "Phone Number";
+"login_phone_placeholder" = "Enter 11-digit phone number";
+"login_verification_code" = "Verification Code";
+"login_code_placeholder" = "Enter 6-digit code";
+"login_send_code" = "Get Code";
+"login_resend_code" = "Resend";
+"login_submit" = "Login";
+"login_phone_hint" = "Unregistered phone numbers will create a new account";
+"login_phone_user" = "Phone User %@";
+"login_invalid_phone" = "Please enter a valid phone number";
+"login_invalid_code" = "Please enter 6-digit verification code";
+"login_send_code_failed" = "Failed to send code, please try again";
+"login_wrong_code" = "Wrong verification code";
+"login_failed" = "Login failed, please try again";
+"login_wechat_unavailable" = "WeChat login is unavailable, please use phone login";
+"login_apple" = "Sign in with Apple";
+"login_apple_user" = "Apple User";
+"login_apple_failed" = "Apple login failed";
+
+// MARK: - Try On
+"tryon_title" = "AI Try-On";
+"tryon_my_image" = "My Photo";
+"tryon_setup_image" = "Set Up My Photo";
+"tryon_setup_image_hint" = "Please upload a full-body photo in Profile first";
+"tryon_select_clothing" = "Select Clothing";
+"tryon_from_wardrobe" = "From Wardrobe";
+"tryon_upload_image" = "Upload Image";
+"tryon_start" = "Start Try-On";
+"tryon_generating" = "AI Generating...";
+"tryon_result" = "Try-On Result";
+"tryon_favorite" = "Favorite";
+"tryon_favorited" = "Favorited";
+"tryon_save_success" = "Saved";
+"tryon_save_success_msg" = "Image saved to Photos";
+"tryon_favorite_success" = "Added to Favorites";
+"tryon_favorite_success_msg" = "Outfit saved to your favorites";
+"tryon_add_to_wardrobe" = "Add to Wardrobe";
+"tryon_add_to_wardrobe_msg" = "This clothing is not in your wardrobe. Add it first to save this outfit?";
+"tryon_add_and_favorite" = "Add & Favorite";
+"tryon_from_wardrobe_label" = "From wardrobe: %@";
+"tryon_setup_alert_title" = "Set Up Photo";
+"tryon_setup_alert_go" = "Go to Settings";
+"tryon_setup_alert_msg" = "Please upload a full-body photo in Profile for AI try-on";
+
+// MARK: - Wardrobe
+"wardrobe_title" = "My Wardrobe";
+"wardrobe_empty" = "No %@ yet";
+"wardrobe_add" = "Add %@";
+"wardrobe_add_title" = "Add Clothing";
+"wardrobe_photo" = "Photo";
+"wardrobe_select_photo" = "Select Photo";
+"wardrobe_info" = "Info";
+"wardrobe_name_placeholder" = "Name (optional)";
+"wardrobe_category" = "Category";
+"wardrobe_detail" = "Clothing Details";
+"wardrobe_remove" = "Remove from Wardrobe";
+"wardrobe_added_on" = "Added on %@";
+"wardrobe_go_add" = "Go to Wardrobe to add";
+
+// MARK: - Clothing Categories
+"category_tops" = "Tops";
+"category_bottoms" = "Bottoms";
+"category_dresses" = "Dresses";
+"category_outerwear" = "Outerwear";
+"category_shoes" = "Shoes";
+"category_accessories" = "Accessories";
+
+// MARK: - Collection
+"collection_title" = "My Favorites";
+"collection_empty" = "No favorites yet";
+"collection_empty_hint" = "Tap the favorite button after try-on\nto save outfits here";
+"collection_outfit" = "Saved Outfit";
+"collection_outfit_detail" = "Outfit Details";
+"collection_outfit_prefix" = "Outfit #%@";
+"collection_items_count" = "Contains %d items";
+"collection_unfavorite" = "Remove from Favorites";
+
+// MARK: - Profile
+"profile_title" = "Profile";
+"profile_user" = "User";
+"profile_wechat_user" = "WeChat User";
+"profile_my_image" = "My Photo";
+"profile_image_set" = "Set";
+"profile_upload_photo" = "Upload Full-Body Photo";
+"profile_upload_hint" = "For AI try-on, front-facing full-body recommended";
+"profile_change_photo" = "Change Photo";
+"profile_image_section" = "Try-On Photo";
+"profile_image_footer" = "This photo will be used for AI try-on";
+"profile_body_data" = "Body Info";
+"profile_body_data_hint" = "Body info improves try-on results";
+"profile_body_section" = "Personal Info (Optional)";
+"profile_body_footer" = "Height, weight, and measurements help AI generate more realistic try-on results";
+"profile_data_section" = "Data";
+"profile_history" = "Try-On History";
+"profile_wardrobe" = "Wardrobe";
+"profile_wardrobe_count" = "%d items";
+"profile_collection" = "Favorites";
+"profile_collection_count" = "%d outfits";
+"profile_settings_section" = "Settings";
+"profile_settings" = "Settings";
+"profile_about_section" = "About";
+"profile_version" = "Version";
+"profile_privacy" = "Privacy Policy";
+"profile_agreement" = "Terms of Service";
+"profile_logout" = "Log Out";
+"profile_photo_source" = "Choose Photo Source";
+"profile_take_photo" = "Take Photo";
+"profile_from_album" = "Choose from Album";
+"profile_height" = "Height";
+"profile_weight" = "Weight";
+"profile_height_label" = "Height: %d cm";
+"profile_weight_label" = "Weight: %d kg";
+"profile_measurements" = "Measurements: %@";
+
+// MARK: - Body Info
+"body_info_title" = "Body Info";
+"body_info_basic" = "Basic Info";
+"body_info_gender" = "Gender";
+"body_info_gender_unselected" = "Not selected";
+"body_info_height_weight" = "Height & Weight";
+"body_info_measurements" = "Measurements";
+"body_info_bust" = "Bust";
+"body_info_waist" = "Waist";
+"body_info_hips" = "Hips";
+"body_info_measurements_hint" = "Measurements help AI simulate how clothes fit your body";
+"body_info_how_to" = "How to measure?";
+"body_info_bust_tip" = "• Bust: Measure around the fullest part of your chest";
+"body_info_waist_tip" = "• Waist: Measure around the narrowest part of your waist";
+"body_info_hips_tip" = "• Hips: Measure around the fullest part of your hips";
+
+// MARK: - Gender
+"gender_male" = "Male";
+"gender_female" = "Female";
+"gender_other" = "Other";
+
+// MARK: - Settings
+"settings_title" = "Settings";
+"settings_notifications" = "Notifications";
+"settings_push" = "Push Notifications";
+"settings_storage" = "Storage";
+"settings_auto_save" = "Auto-save Try-On Results";
+"settings_cache" = "Cache";
+"settings_clear_cache" = "Clear Cache";
+"settings_language" = "Language";
+"settings_language_title" = "Language Settings";
+"settings_language_zh" = "简体中文";
+"settings_language_en" = "English";
+"settings_language_system" = "System Default";
+
+// MARK: - History
+"history_title" = "Try-On History";
+"history_empty" = "No try-on history";
+
+// MARK: - Clothing Image Section
+"clothing_image_section" = "Clothing Image";
+"add_to_wardrobe_section" = "Add to Wardrobe";
+"add_to_wardrobe_hint" = "After adding to wardrobe, this outfit will be saved";
+
+// MARK: - Select Clothing
+"select_clothing_title" = "Select Clothing";
+
+// MARK: - Errors
+"error_invalid_url" = "Invalid URL";
+"error_network" = "Network error: %@";
+"error_decoding" = "Data parsing error";
+"error_server" = "Server error: %@";
+"error_unauthorized" = "Unauthorized, please log in again";
+
+// MARK: - Measurements
+"measurements_not_filled" = "Not filled";
+"measurements_bust" = "Bust %d";
+"measurements_waist" = "Waist %d";
+"measurements_hips" = "Hips %d";
