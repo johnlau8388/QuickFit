@@ -3,9 +3,8 @@ import Foundation
 class APIService {
     static let shared = APIService()
 
-    // MARK: - 配置（请替换为你的实际后端地址）
-    // TODO: 替换为你的腾讯云服务器IP，例如: "http://43.xxx.xxx.xxx:8000/api"
-    private let baseURL = "http://你的服务器IP:8000/api"
+    // MARK: - 配置
+    private let baseURL = "http://129.226.217.43:8000/api"
 
     private init() {}
 
