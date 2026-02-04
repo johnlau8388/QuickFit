@@ -16,6 +16,7 @@ class TryOnViewModel: ObservableObject {
     @Published var showFavoriteSuccess = false
     @Published var showAddToWardrobeAlert = false
     @Published var showAddClothingSheet = false
+    @Published var showResultSheet = false
 
     // 当前选中的衣柜衣物（如果是从衣柜选择的）
     @Published var selectedClothingItem: ClothingItem?
@@ -114,6 +115,7 @@ class TryOnViewModel: ObservableObject {
 
             resultImage = compositeImage
             isGenerating = false
+            showResultSheet = true
         }
     }
     #endif
@@ -139,6 +141,7 @@ class TryOnViewModel: ObservableObject {
                 if response.success, let resultBase64 = response.resultImageBase64 {
                     if let resultImg = ImageService.shared.imageFromBase64(resultBase64) {
                         resultImage = resultImg
+                        showResultSheet = true
                     } else {
                         errorMessage = "结果图片解析失败"
                     }
@@ -146,7 +149,8 @@ class TryOnViewModel: ObservableObject {
                     errorMessage = response.message ?? "生成失败，请重试"
                 }
             } catch {
-                errorMessage = error.localizedDescription
+                errorMessage = "网络错误: \(error.localizedDescription)"
+                print("API调用错误: \(error)")
             }
 
             isGenerating = false

@@ -7,12 +7,12 @@ router = APIRouter()
 gemini_service = GeminiService()
 
 class TryOnRequest(BaseModel):
-    personImageBase64: str
-    clothingImageBase64: str
+    person_image: str
+    clothing_image: str
 
 class TryOnResponse(BaseModel):
     success: bool
-    resultImageBase64: str | None = None
+    result_image: str | None = None
     message: str | None = None
 
 @router.post("/generate", response_model=TryOnResponse)
@@ -23,18 +23,18 @@ async def generate_tryon(request: TryOnRequest):
     """
     try:
         # 解码图片
-        person_image = base64.b64decode(request.personImageBase64)
-        clothing_image = base64.b64decode(request.clothingImageBase64)
+        person_image_data = base64.b64decode(request.person_image)
+        clothing_image_data = base64.b64decode(request.clothing_image)
 
         # 调用 Gemini 生成试衣效果
-        result_image = await gemini_service.generate_tryon(person_image, clothing_image)
+        result_image_data = await gemini_service.generate_tryon(person_image_data, clothing_image_data)
 
-        if result_image:
+        if result_image_data:
             # 编码结果图片
-            result_base64 = base64.b64encode(result_image).decode('utf-8')
+            result_base64 = base64.b64encode(result_image_data).decode('utf-8')
             return TryOnResponse(
                 success=True,
-                resultImageBase64=result_base64,
+                result_image=result_base64,
                 message="试衣成功"
             )
         else:

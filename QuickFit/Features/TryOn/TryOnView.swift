@@ -122,6 +122,116 @@ struct TryOnView: View {
                     }
                 )
             }
+            .fullScreenCover(isPresented: $viewModel.showResultSheet) {
+                TryOnResultSheet(
+                    image: viewModel.resultImage,
+                    isFavorited: viewModel.isCurrentOutfitFavorited,
+                    onSave: {
+                        viewModel.saveResultToPhotos()
+                    },
+                    onFavorite: {
+                        viewModel.handleFavorite()
+                    },
+                    onClose: {
+                        viewModel.showResultSheet = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+// MARK: - 试衣结果全屏弹窗
+struct TryOnResultSheet: View {
+    let image: UIImage?
+    let isFavorited: Bool
+    let onSave: () -> Void
+    let onFavorite: () -> Void
+    let onClose: () -> Void
+
+    @State private var showSaveSuccess = false
+
+    var body: some View {
+        ZStack {
+            // 背景
+            Color.black.ignoresSafeArea()
+
+            VStack(spacing: 0) {
+                // 顶部关闭按钮
+                HStack {
+                    Spacer()
+                    Button(action: onClose) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 32))
+                            .foregroundColor(.white.opacity(0.8))
+                    }
+                    .padding()
+                }
+
+                Spacer()
+
+                // 结果图片
+                if let img = image {
+                    Image(uiImage: img)
+                        .resizable()
+                        .scaledToFit()
+                        .cornerRadius(12)
+                        .padding(.horizontal, 20)
+                } else {
+                    Text("图片加载失败")
+                        .foregroundColor(.white)
+                }
+
+                Spacer()
+
+                // 底部按钮栏
+                HStack(spacing: 40) {
+                    // 保存按钮
+                    Button(action: {
+                        onSave()
+                        showSaveSuccess = true
+                    }) {
+                        VStack(spacing: 8) {
+                            Image(systemName: "square.and.arrow.down")
+                                .font(.system(size: 28))
+                            Text(L10n.save)
+                                .font(.caption)
+                        }
+                        .foregroundColor(.white)
+                    }
+
+                    // 收藏按钮
+                    Button(action: onFavorite) {
+                        VStack(spacing: 8) {
+                            Image(systemName: isFavorited ? "heart.fill" : "heart")
+                                .font(.system(size: 28))
+                                .foregroundColor(isFavorited ? .red : .white)
+                            Text(isFavorited ? L10n.tryonFavorited : L10n.tryonFavorite)
+                                .font(.caption)
+                        }
+                        .foregroundColor(.white)
+                    }
+
+                    // 关闭按钮
+                    Button(action: onClose) {
+                        VStack(spacing: 8) {
+                            Image(systemName: "xmark")
+                                .font(.system(size: 28))
+                            Text(L10n.cancel)
+                                .font(.caption)
+                        }
+                        .foregroundColor(.white)
+                    }
+                }
+                .padding(.vertical, 30)
+                .padding(.horizontal, 40)
+                .background(Color.black.opacity(0.5))
+            }
+        }
+        .alert(L10n.tryonSaveSuccess, isPresented: $showSaveSuccess) {
+            Button(L10n.ok, role: .cancel) {}
+        } message: {
+            Text(L10n.tryonSaveSuccessMsg)
         }
     }
 }
