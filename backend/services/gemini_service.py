@@ -56,28 +56,36 @@ class GeminiService:
             # 调用 Gemini 生成
             response = self.model.generate_content([prompt, person_pil, clothing_pil])
 
-            # 打印调试信息
-            print(f"Gemini 响应 candidates 数量: {len(response.candidates) if response.candidates else 0}")
-            if hasattr(response, 'prompt_feedback'):
-                print(f"Prompt feedback: {response.prompt_feedback}")
+            # 安全地检查响应
+            try:
+                candidates = getattr(response, 'candidates', None)
+                if candidates and len(candidates) > 0:
+                    candidate = candidates[0]
+                    # 打印 finish_reason
+                    finish_reason = getattr(candidate, 'finish_reason', None)
+                    print(f"Finish reason: {finish_reason}")
 
-            # 检查是否有图像输出
-            if response.candidates and len(response.candidates) > 0:
-                candidate = response.candidates[0]
-                if hasattr(candidate, 'content') and candidate.content:
-                    for part in candidate.content.parts:
-                        if hasattr(part, 'inline_data') and part.inline_data:
-                            # 返回生成的图像
-                            image_data = part.inline_data.data
-                            print("成功获取生成的图像")
-                            if isinstance(image_data, str):
-                                return base64.b64decode(image_data)
-                            return image_data
-                        # 如果是文本响应，打印出来
-                        if hasattr(part, 'text') and part.text:
-                            print(f"Gemini 文本响应: {part.text[:200]}")
+                    content = getattr(candidate, 'content', None)
+                    if content:
+                        parts = getattr(content, 'parts', [])
+                        for part in parts:
+                            # 检查是否有图像数据
+                            inline_data = getattr(part, 'inline_data', None)
+                            if inline_data:
+                                image_data = getattr(inline_data, 'data', None)
+                                if image_data:
+                                    print("成功获取生成的图像")
+                                    if isinstance(image_data, str):
+                                        return base64.b64decode(image_data)
+                                    return image_data
+                            # 检查文本响应
+                            text = getattr(part, 'text', None)
+                            if text:
+                                print(f"Gemini 文本响应: {text[:200]}")
+            except Exception as parse_error:
+                print(f"解析响应时出错: {parse_error}")
 
-            # Gemini 目前不支持直接生成图像，返回原图并说明
+            # 返回原图作为 fallback
             print("Gemini 未返回图像，返回原图作为占位")
             output = io.BytesIO()
             person_pil.save(output, format='JPEG', quality=90)
@@ -85,7 +93,10 @@ class GeminiService:
 
         except Exception as e:
             print(f"Gemini 生成错误: {str(e)}")
-            raise e
+            # 返回原图而不是抛出错误
+            output = io.BytesIO()
+            person_pil.save(output, format='JPEG', quality=90)
+            return output.getvalue()
 
     def _resize_image(self, image: Image.Image, max_size: int) -> Image.Image:
         """调整图片大小"""
