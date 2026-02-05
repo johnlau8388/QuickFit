@@ -11,13 +11,7 @@ class GeminiService:
 
         if self.api_key:
             genai.configure(api_key=self.api_key)
-            # 配置支持图像生成
-            self.model = genai.GenerativeModel(
-                self.model_name,
-                generation_config=genai.GenerationConfig(
-                    response_modalities=["TEXT", "IMAGE"]
-                )
-            )
+            self.model = genai.GenerativeModel(self.model_name)
         else:
             self.model = None
             print("警告: GEMINI_API_KEY 未配置")
