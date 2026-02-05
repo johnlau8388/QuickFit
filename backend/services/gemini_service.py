@@ -1,21 +1,22 @@
 import os
-import google.generativeai as genai
-from PIL import Image
-import io
 import base64
+import io
+from PIL import Image
+
+# 使用新版 google-genai SDK
+from google import genai
+from google.genai import types
 
 class GeminiService:
     def __init__(self):
         self.api_key = os.getenv("GEMINI_API_KEY")
-        # 使用稳定的模型
-        self.model_name = os.getenv("GEMINI_MODEL", "gemini-2.0-flash-exp")
+        self.model_name = os.getenv("GEMINI_MODEL", "gemini-2.0-flash-exp-image-generation")
 
         if self.api_key:
-            genai.configure(api_key=self.api_key)
-            self.model = genai.GenerativeModel(self.model_name)
+            self.client = genai.Client(api_key=self.api_key)
             print(f"Gemini 服务初始化完成，模型: {self.model_name}")
         else:
-            self.model = None
+            self.client = None
             print("警告: GEMINI_API_KEY 未配置")
 
     def is_configured(self) -> bool:
@@ -23,9 +24,9 @@ class GeminiService:
 
     async def generate_tryon(self, person_image: bytes, clothing_image: bytes) -> bytes | None:
         """
-        使用 Gemini 生成虚拟试衣效果
+        使用 Gemini 2.0 生成虚拟试衣效果
         """
-        if not self.model:
+        if not self.client:
             raise Exception("Gemini API 未配置")
 
         try:
@@ -33,70 +34,76 @@ class GeminiService:
             person_pil = Image.open(io.BytesIO(person_image))
             clothing_pil = Image.open(io.BytesIO(clothing_image))
 
-            # 调整图片大小以优化处理
+            # 调整图片大小
             person_pil = self._resize_image(person_pil, max_size=1024)
             clothing_pil = self._resize_image(clothing_pil, max_size=512)
 
+            # 转换为 base64
+            person_b64 = self._image_to_base64(person_pil)
+            clothing_b64 = self._image_to_base64(clothing_pil)
+
             # 构建提示词
-            prompt = """
-            You are a virtual try-on assistant.
+            prompt = """You are an expert virtual try-on AI.
 
-            Task: Generate a realistic image of the person in the first image wearing the clothing item shown in the second image.
+Task: Generate a photorealistic image showing the person from the first image wearing the clothing item from the second image.
 
-            Requirements:
-            1. Keep the person's face, body shape, and pose exactly the same
-            2. Replace their current top/clothing with the new clothing item
-            3. Make the clothing fit naturally on the person's body
-            4. Maintain realistic lighting and shadows
-            5. The result should look like a real photo, not edited
+Requirements:
+1. Keep the person's face, body shape, pose, and background exactly the same
+2. Naturally fit the clothing item onto the person's body
+3. Adjust clothing wrinkles and shadows to match the person's pose
+4. Maintain realistic lighting consistent with the original photo
+5. The result should look like an actual photograph, not a digital edit
 
-            Please generate the try-on result image.
-            """
+Generate the virtual try-on result image now."""
 
-            # 调用 Gemini 生成
-            response = self.model.generate_content([prompt, person_pil, clothing_pil])
+            # 调用 Gemini API 生成图像
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=[
+                    types.Content(
+                        role="user",
+                        parts=[
+                            types.Part.from_text(prompt),
+                            types.Part.from_bytes(
+                                data=base64.b64decode(person_b64),
+                                mime_type="image/jpeg"
+                            ),
+                            types.Part.from_bytes(
+                                data=base64.b64decode(clothing_b64),
+                                mime_type="image/jpeg"
+                            ),
+                        ]
+                    )
+                ],
+                config=types.GenerateContentConfig(
+                    response_modalities=["IMAGE", "TEXT"]
+                )
+            )
 
-            # 安全地检查响应
-            try:
-                candidates = getattr(response, 'candidates', None)
-                if candidates and len(candidates) > 0:
-                    candidate = candidates[0]
-                    # 打印 finish_reason
-                    finish_reason = getattr(candidate, 'finish_reason', None)
-                    print(f"Finish reason: {finish_reason}")
-
-                    content = getattr(candidate, 'content', None)
-                    if content:
-                        parts = getattr(content, 'parts', [])
-                        for part in parts:
-                            # 检查是否有图像数据
-                            inline_data = getattr(part, 'inline_data', None)
-                            if inline_data:
-                                image_data = getattr(inline_data, 'data', None)
-                                if image_data:
-                                    print("成功获取生成的图像")
-                                    if isinstance(image_data, str):
-                                        return base64.b64decode(image_data)
-                                    return image_data
-                            # 检查文本响应
-                            text = getattr(part, 'text', None)
-                            if text:
-                                print(f"Gemini 文本响应: {text[:200]}")
-            except Exception as parse_error:
-                print(f"解析响应时出错: {parse_error}")
+            # 检查响应中的图像
+            if response.candidates:
+                for candidate in response.candidates:
+                    if candidate.content and candidate.content.parts:
+                        for part in candidate.content.parts:
+                            if part.inline_data and part.inline_data.data:
+                                print("成功获取生成的图像")
+                                return part.inline_data.data
+                            if part.text:
+                                print(f"Gemini 文本响应: {part.text[:200]}")
 
             # 返回原图作为 fallback
             print("Gemini 未返回图像，返回原图作为占位")
-            output = io.BytesIO()
-            person_pil.save(output, format='JPEG', quality=90)
-            return output.getvalue()
+            return self._pil_to_bytes(person_pil)
 
         except Exception as e:
             print(f"Gemini 生成错误: {str(e)}")
             # 返回原图而不是抛出错误
-            output = io.BytesIO()
-            person_pil.save(output, format='JPEG', quality=90)
-            return output.getvalue()
+            try:
+                person_pil = Image.open(io.BytesIO(person_image))
+                person_pil = self._resize_image(person_pil, max_size=1024)
+                return self._pil_to_bytes(person_pil)
+            except:
+                raise e
 
     def _resize_image(self, image: Image.Image, max_size: int) -> Image.Image:
         """调整图片大小"""
@@ -115,3 +122,15 @@ class GeminiService:
             image = image.convert('RGB')
 
         return image
+
+    def _image_to_base64(self, image: Image.Image) -> str:
+        """将 PIL Image 转换为 base64"""
+        buffer = io.BytesIO()
+        image.save(buffer, format='JPEG', quality=90)
+        return base64.b64encode(buffer.getvalue()).decode('utf-8')
+
+    def _pil_to_bytes(self, image: Image.Image) -> bytes:
+        """将 PIL Image 转换为 bytes"""
+        buffer = io.BytesIO()
+        image.save(buffer, format='JPEG', quality=90)
+        return buffer.getvalue()
