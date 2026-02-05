@@ -7,11 +7,13 @@ import base64
 class GeminiService:
     def __init__(self):
         self.api_key = os.getenv("GEMINI_API_KEY")
-        self.model_name = os.getenv("GEMINI_MODEL", "gemini-2.0-flash-exp-image-generation")
+        # 使用稳定的模型
+        self.model_name = os.getenv("GEMINI_MODEL", "gemini-2.0-flash-exp")
 
         if self.api_key:
             genai.configure(api_key=self.api_key)
             self.model = genai.GenerativeModel(self.model_name)
+            print(f"Gemini 服务初始化完成，模型: {self.model_name}")
         else:
             self.model = None
             print("警告: GEMINI_API_KEY 未配置")
@@ -54,20 +56,29 @@ class GeminiService:
             # 调用 Gemini 生成
             response = self.model.generate_content([prompt, person_pil, clothing_pil])
 
+            # 打印调试信息
+            print(f"Gemini 响应 candidates 数量: {len(response.candidates) if response.candidates else 0}")
+            if hasattr(response, 'prompt_feedback'):
+                print(f"Prompt feedback: {response.prompt_feedback}")
+
             # 检查是否有图像输出
-            if response.candidates:
-                for part in response.candidates[0].content.parts:
-                    if hasattr(part, 'inline_data') and part.inline_data:
-                        # 返回生成的图像
-                        image_data = part.inline_data.data
-                        if isinstance(image_data, str):
-                            return base64.b64decode(image_data)
-                        return image_data
+            if response.candidates and len(response.candidates) > 0:
+                candidate = response.candidates[0]
+                if hasattr(candidate, 'content') and candidate.content:
+                    for part in candidate.content.parts:
+                        if hasattr(part, 'inline_data') and part.inline_data:
+                            # 返回生成的图像
+                            image_data = part.inline_data.data
+                            print("成功获取生成的图像")
+                            if isinstance(image_data, str):
+                                return base64.b64decode(image_data)
+                            return image_data
+                        # 如果是文本响应，打印出来
+                        if hasattr(part, 'text') and part.text:
+                            print(f"Gemini 文本响应: {part.text[:200]}")
 
-            # 如果没有生成图像，返回带文字说明的原图
-            print(f"Gemini 响应: {response.text if hasattr(response, 'text') else 'No text'}")
-
-            # 返回原图作为fallback
+            # Gemini 目前不支持直接生成图像，返回原图并说明
+            print("Gemini 未返回图像，返回原图作为占位")
             output = io.BytesIO()
             person_pil.save(output, format='JPEG', quality=90)
             return output.getvalue()
