@@ -11,7 +11,13 @@ class GeminiService:
 
         if self.api_key:
             genai.configure(api_key=self.api_key)
-            self.model = genai.GenerativeModel(self.model_name)
+            # 配置支持图像生成
+            self.model = genai.GenerativeModel(
+                self.model_name,
+                generation_config=genai.GenerationConfig(
+                    response_modalities=["TEXT", "IMAGE"]
+                )
+            )
         else:
             self.model = None
             print("警告: GEMINI_API_KEY 未配置")
@@ -52,14 +58,7 @@ class GeminiService:
             """
 
             # 调用 Gemini 生成
-            response = self.model.generate_content(
-                [prompt, person_pil, clothing_pil],
-                generation_config=genai.GenerationConfig(
-                    temperature=0.4,
-                    top_p=0.95,
-                    top_k=40,
-                )
-            )
+            response = self.model.generate_content([prompt, person_pil, clothing_pil])
 
             # 检查是否有图像输出
             if response.candidates:
