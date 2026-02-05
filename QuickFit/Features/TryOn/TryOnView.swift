@@ -415,42 +415,48 @@ struct TryOnResultCard: View {
                 .frame(maxHeight: 400)
                 .cornerRadius(12)
 
-            HStack(spacing: 16) {
+            HStack(spacing: 12) {
                 // 收藏按钮
                 Button(action: onFavorite) {
-                    HStack {
+                    HStack(spacing: 4) {
                         Image(systemName: isFavorited ? "heart.fill" : "heart")
+                            .font(.subheadline)
                         Text(isFavorited ? L10n.tryonFavorited : L10n.tryonFavorite)
+                            .font(.caption)
                     }
                     .foregroundColor(isFavorited ? .red : .purple)
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 12)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 10)
                     .background(isFavorited ? Color.red.opacity(0.1) : Color.purple.opacity(0.1))
-                    .cornerRadius(20)
+                    .cornerRadius(18)
                 }
 
                 Button(action: onSave) {
-                    HStack {
+                    HStack(spacing: 4) {
                         Image(systemName: "square.and.arrow.down")
+                            .font(.subheadline)
                         Text(L10n.save)
+                            .font(.caption)
                     }
                     .foregroundColor(.purple)
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 12)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 10)
                     .background(Color.purple.opacity(0.1))
-                    .cornerRadius(20)
+                    .cornerRadius(18)
                 }
 
                 Button(action: onShare) {
-                    HStack {
+                    HStack(spacing: 4) {
                         Image(systemName: "square.and.arrow.up")
+                            .font(.subheadline)
                         Text(L10n.share)
+                            .font(.caption)
                     }
                     .foregroundColor(.purple)
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 12)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 10)
                     .background(Color.purple.opacity(0.1))
-                    .cornerRadius(20)
+                    .cornerRadius(18)
                 }
             }
         }
