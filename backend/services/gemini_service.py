@@ -63,14 +63,18 @@ Generate the virtual try-on result image now."""
                     types.Content(
                         role="user",
                         parts=[
-                            types.Part.from_text(prompt),
-                            types.Part.from_bytes(
-                                data=base64.b64decode(person_b64),
-                                mime_type="image/jpeg"
+                            types.Part(text=prompt),
+                            types.Part(
+                                inline_data=types.Blob(
+                                    data=base64.b64decode(person_b64),
+                                    mime_type="image/jpeg"
+                                )
                             ),
-                            types.Part.from_bytes(
-                                data=base64.b64decode(clothing_b64),
-                                mime_type="image/jpeg"
+                            types.Part(
+                                inline_data=types.Blob(
+                                    data=base64.b64decode(clothing_b64),
+                                    mime_type="image/jpeg"
+                                )
                             ),
                         ]
                     )
