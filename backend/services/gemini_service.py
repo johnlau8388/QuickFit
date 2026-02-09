@@ -22,9 +22,10 @@ class GeminiService:
     def is_configured(self) -> bool:
         return self.api_key is not None
 
-    async def generate_tryon(self, person_image: bytes, clothing_image: bytes) -> bytes | None:
+    async def generate_tryon(self, person_image: bytes, clothing_images: list[bytes]) -> bytes | None:
         """
         使用 Gemini 2.0 生成虚拟试衣效果
+        支持1-3件服装同时试穿
         """
         if not self.client:
             raise Exception("Gemini API 未配置")
@@ -32,18 +33,18 @@ class GeminiService:
         try:
             # 将字节转换为 PIL Image
             person_pil = Image.open(io.BytesIO(person_image))
-            clothing_pil = Image.open(io.BytesIO(clothing_image))
-
-            # 调整图片大小
             person_pil = self._resize_image(person_pil, max_size=1024)
-            clothing_pil = self._resize_image(clothing_pil, max_size=512)
 
-            # 转换为 base64
-            person_b64 = self._image_to_base64(person_pil)
-            clothing_b64 = self._image_to_base64(clothing_pil)
+            clothing_pils = []
+            for img_bytes in clothing_images:
+                pil = Image.open(io.BytesIO(img_bytes))
+                pil = self._resize_image(pil, max_size=512)
+                clothing_pils.append(pil)
 
             # 构建提示词
-            prompt = """You are an expert virtual try-on AI.
+            n = len(clothing_pils)
+            if n == 1:
+                prompt = """You are an expert virtual try-on AI.
 
 Task: Generate a photorealistic image showing the person from the first image wearing the clothing item from the second image.
 
@@ -55,6 +56,44 @@ Requirements:
 5. The result should look like an actual photograph, not a digital edit
 
 Generate the virtual try-on result image now."""
+            else:
+                prompt = f"""You are an expert virtual try-on AI.
+
+Task: Generate a photorealistic image showing the person from the first image wearing ALL {n} clothing items from the following images simultaneously as a complete outfit.
+
+Requirements:
+1. Keep the person's face, body shape, pose, and background exactly the same
+2. Naturally fit ALL {n} clothing items onto the person's body as a coordinated outfit
+3. Layer the clothing items correctly (e.g., outerwear over tops)
+4. Adjust clothing wrinkles and shadows to match the person's pose
+5. Maintain realistic lighting consistent with the original photo
+6. The result should look like an actual photograph, not a digital edit
+
+将这{n}件服装同时穿到人物身上，生成一张完整的穿搭效果图。
+
+Generate the virtual try-on result image now."""
+
+            # 构建内容部分
+            parts = [types.Part(text=prompt)]
+
+            # 添加人物图片
+            person_b64 = self._image_to_base64(person_pil)
+            parts.append(types.Part(
+                inline_data=types.Blob(
+                    data=base64.b64decode(person_b64),
+                    mime_type="image/jpeg"
+                )
+            ))
+
+            # 添加所有服装图片
+            for clothing_pil in clothing_pils:
+                clothing_b64 = self._image_to_base64(clothing_pil)
+                parts.append(types.Part(
+                    inline_data=types.Blob(
+                        data=base64.b64decode(clothing_b64),
+                        mime_type="image/jpeg"
+                    )
+                ))
 
             # 调用 Gemini API 生成图像
             response = self.client.models.generate_content(
@@ -62,21 +101,7 @@ Generate the virtual try-on result image now."""
                 contents=[
                     types.Content(
                         role="user",
-                        parts=[
-                            types.Part(text=prompt),
-                            types.Part(
-                                inline_data=types.Blob(
-                                    data=base64.b64decode(person_b64),
-                                    mime_type="image/jpeg"
-                                )
-                            ),
-                            types.Part(
-                                inline_data=types.Blob(
-                                    data=base64.b64decode(clothing_b64),
-                                    mime_type="image/jpeg"
-                                )
-                            ),
-                        ]
+                        parts=parts
                     )
                 ],
                 config=types.GenerateContentConfig(
@@ -90,7 +115,7 @@ Generate the virtual try-on result image now."""
                     if candidate.content and candidate.content.parts:
                         for part in candidate.content.parts:
                             if part.inline_data and part.inline_data.data:
-                                print("成功获取生成的图像")
+                                print(f"成功获取生成的图像（{n}件服装）")
                                 return part.inline_data.data
                             if part.text:
                                 print(f"Gemini 文本响应: {part.text[:200]}")

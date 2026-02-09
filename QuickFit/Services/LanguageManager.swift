@@ -292,6 +292,41 @@ struct L10n {
     // MARK: - Select Clothing
     static var selectClothingTitle: String { tr("select_clothing_title") }
 
+    // MARK: - Subcategories - Tops
+    static var subcategoryTShirt: String { tr("subcategory_t_shirt") }
+    static var subcategoryShirt: String { tr("subcategory_shirt") }
+    static var subcategorySweater: String { tr("subcategory_sweater") }
+    static var subcategoryHoodie: String { tr("subcategory_hoodie") }
+    static var subcategoryPolo: String { tr("subcategory_polo") }
+    static var subcategoryTank: String { tr("subcategory_tank") }
+
+    // MARK: - Subcategories - Bottoms
+    static var subcategoryJeans: String { tr("subcategory_jeans") }
+    static var subcategoryCasualPants: String { tr("subcategory_casual_pants") }
+    static var subcategoryDressPants: String { tr("subcategory_dress_pants") }
+    static var subcategoryShorts: String { tr("subcategory_shorts") }
+    static var subcategorySportsPants: String { tr("subcategory_sports_pants") }
+    static var subcategorySkirt: String { tr("subcategory_skirt") }
+
+    // MARK: - Subcategories - Outerwear
+    static var subcategoryJacket: String { tr("subcategory_jacket") }
+    static var subcategoryCoat: String { tr("subcategory_coat") }
+    static var subcategoryBlazer: String { tr("subcategory_blazer") }
+    static var subcategoryDownJacket: String { tr("subcategory_down_jacket") }
+
+    // MARK: - Subcategories - Dresses
+    static var subcategoryCasualDress: String { tr("subcategory_casual_dress") }
+    static var subcategoryFormalDress: String { tr("subcategory_formal_dress") }
+
+    // MARK: - Multi-Clothing
+    static var tryonAddClothing: String { tr("tryon_add_clothing") }
+    static var tryonMaxClothing: String { tr("tryon_max_clothing") }
+    static func tryonClothingCount(_ count: Int) -> String { tr("tryon_clothing_count", count) }
+    static func tryonConfirmSelection(_ count: Int) -> String { tr("tryon_confirm_selection", count) }
+    static var tryonSelectedItems: String { tr("tryon_selected_items") }
+    static var wardrobeSubcategory: String { tr("wardrobe_subcategory") }
+    static var wardrobeSubcategoryNone: String { tr("wardrobe_subcategory_none") }
+
     // MARK: - Measurements
     static var measurementsNotFilled: String { tr("measurements_not_filled") }
     static func measurementsBust(_ v: Int) -> String { tr("measurements_bust", v) }

@@ -35,11 +35,11 @@ struct WeChatTokenResponse: Codable {
 // MARK: - 试衣请求
 struct TryOnRequest: Codable {
     let personImageBase64: String
-    let clothingImageBase64: String
+    let clothingImagesBase64: [String]
 
     enum CodingKeys: String, CodingKey {
         case personImageBase64 = "person_image"
-        case clothingImageBase64 = "clothing_image"
+        case clothingImagesBase64 = "clothing_images"
     }
 }
 
@@ -84,7 +84,7 @@ enum APIError: LocalizedError {
 struct TryOnResult: Identifiable {
     let id = UUID()
     let originalPersonImage: Data
-    let clothingImage: Data
+    let clothingImages: [Data]
     let resultImage: Data
     let createdAt: Date
 }
@@ -123,19 +123,92 @@ enum ClothingCategory: String, Codable, CaseIterable, Identifiable {
     }
 }
 
+// MARK: - 服装子类别
+enum ClothingSubcategory: String, Codable, CaseIterable, Identifiable {
+    // Tops
+    case tShirt = "t_shirt"
+    case shirt = "shirt"
+    case sweater = "sweater"
+    case hoodie = "hoodie"
+    case polo = "polo"
+    case tank = "tank"
+
+    // Bottoms
+    case jeans = "jeans"
+    case casualPants = "casual_pants"
+    case dressPants = "dress_pants"
+    case shorts = "shorts"
+    case sportsPants = "sports_pants"
+    case skirt = "skirt"
+
+    // Outerwear
+    case jacket = "jacket"
+    case coat = "coat"
+    case blazer = "blazer"
+    case downJacket = "down_jacket"
+
+    // Dresses
+    case casualDress = "casual_dress"
+    case formalDress = "formal_dress"
+
+    var id: String { rawValue }
+
+    var parentCategory: ClothingCategory {
+        switch self {
+        case .tShirt, .shirt, .sweater, .hoodie, .polo, .tank:
+            return .tops
+        case .jeans, .casualPants, .dressPants, .shorts, .sportsPants, .skirt:
+            return .bottoms
+        case .jacket, .coat, .blazer, .downJacket:
+            return .outerwear
+        case .casualDress, .formalDress:
+            return .dresses
+        }
+    }
+
+    var displayName: String {
+        switch self {
+        case .tShirt: return L10n.subcategoryTShirt
+        case .shirt: return L10n.subcategoryShirt
+        case .sweater: return L10n.subcategorySweater
+        case .hoodie: return L10n.subcategoryHoodie
+        case .polo: return L10n.subcategoryPolo
+        case .tank: return L10n.subcategoryTank
+        case .jeans: return L10n.subcategoryJeans
+        case .casualPants: return L10n.subcategoryCasualPants
+        case .dressPants: return L10n.subcategoryDressPants
+        case .shorts: return L10n.subcategoryShorts
+        case .sportsPants: return L10n.subcategorySportsPants
+        case .skirt: return L10n.subcategorySkirt
+        case .jacket: return L10n.subcategoryJacket
+        case .coat: return L10n.subcategoryCoat
+        case .blazer: return L10n.subcategoryBlazer
+        case .downJacket: return L10n.subcategoryDownJacket
+        case .casualDress: return L10n.subcategoryCasualDress
+        case .formalDress: return L10n.subcategoryFormalDress
+        }
+    }
+
+    static func subcategories(for category: ClothingCategory) -> [ClothingSubcategory] {
+        allCases.filter { $0.parentCategory == category }
+    }
+}
+
 // MARK: - 衣物项
 struct ClothingItem: Identifiable, Codable, Equatable {
     let id: UUID
     var name: String
     var category: ClothingCategory
+    var subcategory: ClothingSubcategory?
     var imageData: Data
     var createdAt: Date
     var tags: [String]
 
-    init(id: UUID = UUID(), name: String, category: ClothingCategory, imageData: Data, tags: [String] = []) {
+    init(id: UUID = UUID(), name: String, category: ClothingCategory, subcategory: ClothingSubcategory? = nil, imageData: Data, tags: [String] = []) {
         self.id = id
         self.name = name
         self.category = category
+        self.subcategory = subcategory
         self.imageData = imageData
         self.createdAt = Date()
         self.tags = tags

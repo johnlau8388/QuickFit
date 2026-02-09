@@ -202,6 +202,41 @@
 "error_server" = "服务器错误：%@";
 "error_unauthorized" = "未授权，请重新登录";
 
+// MARK: - Subcategories - Tops
+"subcategory_t_shirt" = "T恤";
+"subcategory_shirt" = "衬衫";
+"subcategory_sweater" = "毛衣";
+"subcategory_hoodie" = "卫衣";
+"subcategory_polo" = "Polo衫";
+"subcategory_tank" = "背心";
+
+// MARK: - Subcategories - Bottoms
+"subcategory_jeans" = "牛仔裤";
+"subcategory_casual_pants" = "休闲裤";
+"subcategory_dress_pants" = "西裤";
+"subcategory_shorts" = "短裤";
+"subcategory_sports_pants" = "运动裤";
+"subcategory_skirt" = "半身裙";
+
+// MARK: - Subcategories - Outerwear
+"subcategory_jacket" = "夹克";
+"subcategory_coat" = "大衣";
+"subcategory_blazer" = "西装外套";
+"subcategory_down_jacket" = "羽绒服";
+
+// MARK: - Subcategories - Dresses
+"subcategory_casual_dress" = "休闲连衣裙";
+"subcategory_formal_dress" = "正式连衣裙";
+
+// MARK: - Multi-Clothing
+"tryon_add_clothing" = "添加服装";
+"tryon_max_clothing" = "最多选择3件";
+"tryon_clothing_count" = "已选 %d 件服装";
+"tryon_confirm_selection" = "确认(%d)";
+"tryon_selected_items" = "已选服装";
+"wardrobe_subcategory" = "细分类别";
+"wardrobe_subcategory_none" = "无";
+
 // MARK: - Measurements
 "measurements_not_filled" = "未填写";
 "measurements_bust" = "胸围%d";

@@ -58,8 +58,8 @@ class APIService {
         }
     }
 
-    // MARK: - 虚拟试衣
-    func tryOnClothing(personImageData: Data, clothingImageData: Data) async throws -> TryOnResponse {
+    // MARK: - 虚拟试衣（多件服装）
+    func tryOnClothing(personImageData: Data, clothingImagesData: [Data]) async throws -> TryOnResponse {
         let url = URL(string: "\(baseURL)/tryon/generate")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -68,7 +68,7 @@ class APIService {
 
         let tryOnRequest = TryOnRequest(
             personImageBase64: personImageData.base64EncodedString(),
-            clothingImageBase64: clothingImageData.base64EncodedString()
+            clothingImagesBase64: clothingImagesData.map { $0.base64EncodedString() }
         )
 
         request.httpBody = try JSONEncoder().encode(tryOnRequest)
@@ -88,5 +88,10 @@ class APIService {
         } catch {
             throw APIError.decodingError(error)
         }
+    }
+
+    // MARK: - 虚拟试衣（单件，向后兼容）
+    func tryOnClothing(personImageData: Data, clothingImageData: Data) async throws -> TryOnResponse {
+        try await tryOnClothing(personImageData: personImageData, clothingImagesData: [clothingImageData])
     }
 }

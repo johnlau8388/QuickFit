@@ -203,12 +203,17 @@ struct AddClothingSheet: View {
     @State private var selectedImage: UIImage?
     @State private var clothingName = ""
     @State private var selectedCategory: ClothingCategory
+    @State private var selectedSubcategory: ClothingSubcategory?
     @State private var showPhotoPicker = false
 
     init(viewModel: WardrobeViewModel, defaultCategory: ClothingCategory) {
         self.viewModel = viewModel
         self.defaultCategory = defaultCategory
         _selectedCategory = State(initialValue: defaultCategory)
+    }
+
+    private var availableSubcategories: [ClothingSubcategory] {
+        ClothingSubcategory.subcategories(for: selectedCategory)
     }
 
     var body: some View {
@@ -248,6 +253,18 @@ struct AddClothingSheet: View {
                             Text(category.displayName).tag(category)
                         }
                     }
+                    .onChange(of: selectedCategory) { _ in
+                        selectedSubcategory = nil
+                    }
+
+                    if !availableSubcategories.isEmpty {
+                        Picker(L10n.wardrobeSubcategory, selection: $selectedSubcategory) {
+                            Text(L10n.wardrobeSubcategoryNone).tag(nil as ClothingSubcategory?)
+                            ForEach(availableSubcategories) { sub in
+                                Text(sub.displayName).tag(sub as ClothingSubcategory?)
+                            }
+                        }
+                    }
                 }
             }
             .navigationTitle(L10n.wardrobeAddTitle)
@@ -276,7 +293,7 @@ struct AddClothingSheet: View {
 
         let name = clothingName.isEmpty ? "\(selectedCategory.displayName) \(Date().formatted(date: .abbreviated, time: .omitted))" : clothingName
 
-        viewModel.addItem(image: image, name: name, category: selectedCategory)
+        viewModel.addItem(image: image, name: name, category: selectedCategory, subcategory: selectedSubcategory)
         dismiss()
     }
 }
@@ -303,6 +320,10 @@ struct ClothingDetailView: View {
                         HStack {
                             Image(systemName: item.category.icon)
                             Text(item.category.displayName)
+                            if let sub = item.subcategory {
+                                Text("·")
+                                Text(sub.displayName)
+                            }
                         }
                         .font(.subheadline)
                         .foregroundColor(.secondary)

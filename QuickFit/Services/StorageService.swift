@@ -177,10 +177,10 @@ class StorageService: ObservableObject {
 
     // MARK: - 辅助方法
 
-    func createClothingItem(from image: UIImage, name: String, category: ClothingCategory) -> ClothingItem? {
+    func createClothingItem(from image: UIImage, name: String, category: ClothingCategory, subcategory: ClothingSubcategory? = nil) -> ClothingItem? {
         guard let imageData = image.jpegData(compressionQuality: 0.8) else {
             return nil
         }
-        return ClothingItem(name: name, category: category, imageData: imageData)
+        return ClothingItem(name: name, category: category, subcategory: subcategory, imageData: imageData)
     }
 }

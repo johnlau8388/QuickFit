@@ -15,8 +15,8 @@ class WardrobeViewModel: ObservableObject {
         storage.getClothingItems(by: category)
     }
 
-    func addItem(image: UIImage, name: String, category: ClothingCategory) {
-        guard let item = storage.createClothingItem(from: image, name: name, category: category) else {
+    func addItem(image: UIImage, name: String, category: ClothingCategory, subcategory: ClothingSubcategory? = nil) {
+        guard let item = storage.createClothingItem(from: image, name: name, category: category, subcategory: subcategory) else {
             return
         }
         storage.addClothingItem(item)

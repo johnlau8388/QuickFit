@@ -18,14 +18,8 @@ struct TryOnView: View {
                         onSetupTap: { showProfileAlert = true }
                     )
 
-                    // 服装选择区域
-                    ClothingSelectionCard(
-                        selectedClothing: viewModel.selectedClothingItem,
-                        clothingImage: viewModel.clothingImage,
-                        onSelectFromWardrobe: { viewModel.showWardrobePicker = true },
-                        onUploadNew: { viewModel.showClothingPhotoPicker = true },
-                        onClear: { viewModel.clearClothing() }
-                    )
+                    // 服装选择区域（多件）
+                    MultiClothingSelectionCard(viewModel: viewModel)
 
                     // 生成按钮
                     Button(action: {
@@ -78,20 +72,23 @@ struct TryOnView: View {
             }
             .navigationTitle(L10n.tryonTitle)
             .alert(L10n.tryonSetupAlertTitle, isPresented: $showProfileAlert) {
-                Button(L10n.tryonSetupAlertGo) {
-                    // 切换到"我的"tab - 这里通过通知或其他方式实现
-                }
+                Button(L10n.tryonSetupAlertGo) {}
                 Button(L10n.cancel, role: .cancel) {}
             } message: {
                 Text(L10n.tryonSetupAlertMsg)
             }
             .sheet(isPresented: $viewModel.showClothingPhotoPicker) {
-                PhotoPicker(selectedImage: $viewModel.clothingImage)
+                PhotoPicker(selectedImage: Binding(
+                    get: { nil },
+                    set: { image in
+                        if let img = image {
+                            viewModel.addUploadedImage(img)
+                        }
+                    }
+                ))
             }
             .sheet(isPresented: $viewModel.showWardrobePicker) {
-                WardrobePickerSheet(onSelect: { item in
-                    viewModel.selectFromWardrobe(item)
-                })
+                WardrobeMultiPickerSheet(viewModel: viewModel)
             }
             .alert(L10n.tryonSaveSuccess, isPresented: $viewModel.showSaveSuccess) {
                 Button(L10n.ok, role: .cancel) {}
@@ -113,7 +110,7 @@ struct TryOnView: View {
             }
             .sheet(isPresented: $viewModel.showAddClothingSheet) {
                 AddClothingBeforeFavoriteSheet(
-                    image: viewModel.clothingImage,
+                    image: viewModel.uploadedClothingImages.first,
                     onSave: { name, category in
                         viewModel.saveClothingAndFavorite(name: name, category: category)
                     },
@@ -153,11 +150,9 @@ struct TryOnResultSheet: View {
 
     var body: some View {
         ZStack {
-            // 背景
             Color.black.ignoresSafeArea()
 
             VStack(spacing: 0) {
-                // 顶部关闭按钮
                 HStack {
                     Spacer()
                     Button(action: onClose) {
@@ -170,7 +165,6 @@ struct TryOnResultSheet: View {
 
                 Spacer()
 
-                // 结果图片
                 if let img = image {
                     Image(uiImage: img)
                         .resizable()
@@ -184,9 +178,7 @@ struct TryOnResultSheet: View {
 
                 Spacer()
 
-                // 底部按钮栏
                 HStack(spacing: 40) {
-                    // 保存按钮
                     Button(action: {
                         onSave()
                         showSaveSuccess = true
@@ -200,7 +192,6 @@ struct TryOnResultSheet: View {
                         .foregroundColor(.white)
                     }
 
-                    // 收藏按钮
                     Button(action: onFavorite) {
                         VStack(spacing: 8) {
                             Image(systemName: isFavorited ? "heart.fill" : "heart")
@@ -212,7 +203,6 @@ struct TryOnResultSheet: View {
                         .foregroundColor(.white)
                     }
 
-                    // 关闭按钮
                     Button(action: onClose) {
                         VStack(spacing: 8) {
                             Image(systemName: "xmark")
@@ -246,7 +236,6 @@ struct MyImageCard: View {
     var body: some View {
         VStack(spacing: 12) {
             if hasImage, let data = imageData, let uiImage = UIImage(data: data) {
-                // 已设置形象
                 VStack(spacing: 8) {
                     Image(uiImage: uiImage)
                         .resizable()
@@ -270,7 +259,6 @@ struct MyImageCard: View {
                     }
                 }
             } else {
-                // 未设置形象
                 Button(action: onSetupTap) {
                     VStack(spacing: 12) {
                         Image(systemName: "person.crop.rectangle.badge.plus")
@@ -300,60 +288,38 @@ struct MyImageCard: View {
     }
 }
 
-// MARK: - 服装选择卡片
-struct ClothingSelectionCard: View {
-    let selectedClothing: ClothingItem?
-    let clothingImage: UIImage?
-    let onSelectFromWardrobe: () -> Void
-    let onUploadNew: () -> Void
-    let onClear: () -> Void
+// MARK: - 多件服装选择卡片
+struct MultiClothingSelectionCard: View {
+    @ObservedObject var viewModel: TryOnViewModel
 
     var body: some View {
         VStack(spacing: 12) {
-            if let image = clothingImage {
-                // 已选择服装
-                ZStack(alignment: .topTrailing) {
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(height: 200)
-                        .clipped()
-                        .cornerRadius(12)
-
-                    // 清除按钮
-                    Button(action: onClear) {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title2)
-                            .foregroundColor(.white)
-                            .shadow(radius: 2)
-                    }
-                    .padding(8)
+            // 标题和数量
+            HStack {
+                Text(L10n.tryonSelectClothing)
+                    .font(.headline)
+                Spacer()
+                if viewModel.totalClothingCount > 0 {
+                    Text(L10n.tryonClothingCount(viewModel.totalClothingCount))
+                        .font(.caption)
+                        .foregroundColor(.secondary)
                 }
+            }
+            .padding(.horizontal)
 
-                // 来源标签
-                if let clothing = selectedClothing {
-                    HStack {
-                        Image(systemName: "checkmark.circle.fill")
-                            .foregroundColor(.green)
-                        Text(L10n.tryonFromWardrobeLabel(clothing.name))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                }
-            } else {
-                // 未选择服装 - 显示两个选项
+            if viewModel.totalClothingCount == 0 {
+                // 空状态 - 显示选择选项
                 VStack(spacing: 16) {
                     Image(systemName: "tshirt.fill")
                         .font(.system(size: 40))
                         .foregroundColor(.purple)
 
                     Text(L10n.tryonSelectClothing)
-                        .font(.headline)
-                        .foregroundColor(.primary)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
 
                     HStack(spacing: 12) {
-                        // 从衣柜选择
-                        Button(action: onSelectFromWardrobe) {
+                        Button(action: { viewModel.showWardrobePicker = true }) {
                             HStack {
                                 Image(systemName: "cabinet")
                                 Text(L10n.tryonFromWardrobe)
@@ -366,8 +332,7 @@ struct ClothingSelectionCard: View {
                             .cornerRadius(20)
                         }
 
-                        // 上传新的
-                        Button(action: onUploadNew) {
+                        Button(action: { viewModel.showClothingPhotoPicker = true }) {
                             HStack {
                                 Image(systemName: "photo.badge.plus")
                                 Text(L10n.tryonUploadImage)
@@ -381,7 +346,7 @@ struct ClothingSelectionCard: View {
                         }
                     }
                 }
-                .frame(height: 200)
+                .frame(height: 180)
                 .frame(maxWidth: .infinity)
                 .background(Color(.systemGray6))
                 .cornerRadius(12)
@@ -390,9 +355,126 @@ struct ClothingSelectionCard: View {
                         .stroke(style: StrokeStyle(lineWidth: 2, dash: [8]))
                         .foregroundColor(.purple.opacity(0.3))
                 )
+                .padding(.horizontal)
+            } else {
+                // 已选服装 - 水平滚动
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 12) {
+                        // 衣柜选中的衣物
+                        ForEach(viewModel.selectedClothingItems) { item in
+                            SelectedClothingTile(
+                                image: UIImage(data: item.imageData),
+                                label: item.name,
+                                categoryLabel: item.category.displayName,
+                                onRemove: { viewModel.removeClothingItem(item) }
+                            )
+                        }
+
+                        // 上传的图片
+                        ForEach(viewModel.uploadedClothingImages.indices, id: \.self) { index in
+                            SelectedClothingTile(
+                                image: viewModel.uploadedClothingImages[index],
+                                label: L10n.tryonUploadImage,
+                                categoryLabel: nil,
+                                onRemove: { viewModel.removeUploadedImage(at: index) }
+                            )
+                        }
+
+                        // 添加更多按钮
+                        if viewModel.canAddMore {
+                            AddMoreClothingTile(
+                                onFromWardrobe: { viewModel.showWardrobePicker = true },
+                                onUpload: { viewModel.showClothingPhotoPicker = true }
+                            )
+                        }
+                    }
+                    .padding(.horizontal)
+                    .padding(.vertical, 4)
+                }
             }
         }
-        .padding(.horizontal)
+    }
+}
+
+// MARK: - 已选服装瓦片
+struct SelectedClothingTile: View {
+    let image: UIImage?
+    let label: String
+    let categoryLabel: String?
+    let onRemove: () -> Void
+
+    var body: some View {
+        VStack(spacing: 4) {
+            ZStack(alignment: .topTrailing) {
+                if let img = image {
+                    Image(uiImage: img)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 90, height: 90)
+                        .clipped()
+                        .cornerRadius(8)
+                } else {
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.2))
+                        .frame(width: 90, height: 90)
+                        .cornerRadius(8)
+                }
+
+                Button(action: onRemove) {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.system(size: 20))
+                        .foregroundColor(.white)
+                        .shadow(radius: 2)
+                }
+                .offset(x: 6, y: -6)
+            }
+
+            if let cat = categoryLabel {
+                Text(cat)
+                    .font(.caption2)
+                    .foregroundColor(.purple)
+            }
+
+            Text(label)
+                .font(.caption)
+                .lineLimit(1)
+                .foregroundColor(.primary)
+                .frame(width: 90)
+        }
+    }
+}
+
+// MARK: - 添加更多服装瓦片
+struct AddMoreClothingTile: View {
+    let onFromWardrobe: () -> Void
+    let onUpload: () -> Void
+
+    var body: some View {
+        Menu {
+            Button(action: onFromWardrobe) {
+                Label(L10n.tryonFromWardrobe, systemImage: "cabinet")
+            }
+            Button(action: onUpload) {
+                Label(L10n.tryonUploadImage, systemImage: "photo.badge.plus")
+            }
+        } label: {
+            VStack(spacing: 8) {
+                Image(systemName: "plus")
+                    .font(.system(size: 24))
+                    .foregroundColor(.purple)
+                Text(L10n.tryonAddClothing)
+                    .font(.caption)
+                    .foregroundColor(.purple)
+            }
+            .frame(width: 90, height: 90)
+            .background(Color.purple.opacity(0.1))
+            .cornerRadius(8)
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(style: StrokeStyle(lineWidth: 2, dash: [6]))
+                    .foregroundColor(.purple.opacity(0.3))
+            )
+        }
     }
 }
 
@@ -416,7 +498,6 @@ struct TryOnResultCard: View {
                 .cornerRadius(12)
 
             HStack(spacing: 12) {
-                // 收藏按钮
                 Button(action: onFavorite) {
                     HStack(spacing: 4) {
                         Image(systemName: isFavorited ? "heart.fill" : "heart")
@@ -468,11 +549,12 @@ struct TryOnResultCard: View {
     }
 }
 
-// MARK: - 衣柜选择器
-struct WardrobePickerSheet: View {
-    let onSelect: (ClothingItem) -> Void
+// MARK: - 衣柜多选选择器
+struct WardrobeMultiPickerSheet: View {
+    @ObservedObject var viewModel: TryOnViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var selectedCategory: ClothingCategory = .tops
+    @State private var pendingSelections: [ClothingItem] = []
     @ObservedObject private var storage = StorageService.shared
 
     var body: some View {
@@ -485,18 +567,60 @@ struct WardrobePickerSheet: View {
                             Button {
                                 selectedCategory = category
                             } label: {
-                                Text(category.displayName)
-                                    .font(.subheadline)
-                                    .fontWeight(selectedCategory == category ? .semibold : .regular)
-                                    .foregroundColor(selectedCategory == category ? .white : .primary)
-                                    .padding(.horizontal, 16)
-                                    .padding(.vertical, 8)
-                                    .background(selectedCategory == category ? Color.purple : Color(.systemGray6))
-                                    .cornerRadius(20)
+                                HStack(spacing: 4) {
+                                    Text(category.displayName)
+                                        .font(.subheadline)
+                                        .fontWeight(selectedCategory == category ? .semibold : .regular)
+
+                                    // 已选中该类别的标记
+                                    if pendingSelections.contains(where: { $0.category == category }) {
+                                        Image(systemName: "checkmark.circle.fill")
+                                            .font(.caption)
+                                            .foregroundColor(.green)
+                                    }
+                                }
+                                .foregroundColor(selectedCategory == category ? .white : .primary)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 8)
+                                .background(selectedCategory == category ? Color.purple : Color(.systemGray6))
+                                .cornerRadius(20)
                             }
                         }
                     }
                     .padding()
+                }
+
+                // 选中摘要栏
+                if !pendingSelections.isEmpty {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 8) {
+                            Text(L10n.tryonSelectedItems)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+
+                            ForEach(pendingSelections) { item in
+                                HStack(spacing: 4) {
+                                    if let img = UIImage(data: item.imageData) {
+                                        Image(uiImage: img)
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 24, height: 24)
+                                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                                    }
+                                    Text(item.name)
+                                        .font(.caption)
+                                        .lineLimit(1)
+                                }
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(Color.purple.opacity(0.1))
+                                .cornerRadius(12)
+                            }
+                        }
+                        .padding(.horizontal)
+                        .padding(.vertical, 8)
+                    }
+                    .background(Color(.systemGray6))
                 }
 
                 // 衣物列表
@@ -521,19 +645,34 @@ struct WardrobePickerSheet: View {
                             GridItem(.flexible(), spacing: 12)
                         ], spacing: 12) {
                             ForEach(items) { item in
+                                let isSelected = pendingSelections.contains(where: { $0.id == item.id })
                                 Button {
-                                    onSelect(item)
-                                    dismiss()
+                                    toggleSelection(item)
                                 } label: {
                                     VStack(spacing: 8) {
-                                        if let uiImage = UIImage(data: item.imageData) {
-                                            Image(uiImage: uiImage)
-                                                .resizable()
-                                                .scaledToFill()
-                                                .frame(width: 100, height: 100)
-                                                .clipped()
-                                                .cornerRadius(8)
+                                        ZStack(alignment: .topTrailing) {
+                                            if let uiImage = UIImage(data: item.imageData) {
+                                                Image(uiImage: uiImage)
+                                                    .resizable()
+                                                    .scaledToFill()
+                                                    .frame(width: 100, height: 100)
+                                                    .clipped()
+                                                    .cornerRadius(8)
+                                                    .overlay(
+                                                        RoundedRectangle(cornerRadius: 8)
+                                                            .stroke(isSelected ? Color.purple : Color.clear, lineWidth: 3)
+                                                    )
+                                            }
+
+                                            if isSelected {
+                                                Image(systemName: "checkmark.circle.fill")
+                                                    .font(.system(size: 20))
+                                                    .foregroundColor(.purple)
+                                                    .background(Circle().fill(.white).padding(2))
+                                                    .offset(x: 4, y: -4)
+                                            }
                                         }
+
                                         Text(item.name)
                                             .font(.caption)
                                             .lineLimit(1)
@@ -554,8 +693,39 @@ struct WardrobePickerSheet: View {
                         dismiss()
                     }
                 }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(L10n.tryonConfirmSelection(pendingSelections.count)) {
+                        confirmSelections()
+                    }
+                    .disabled(pendingSelections.isEmpty)
+                }
+            }
+            .onAppear {
+                pendingSelections = viewModel.selectedClothingItems
             }
         }
+    }
+
+    private func toggleSelection(_ item: ClothingItem) {
+        if let index = pendingSelections.firstIndex(where: { $0.id == item.id }) {
+            // Deselect
+            pendingSelections.remove(at: index)
+        } else if let existingIndex = pendingSelections.firstIndex(where: { $0.category == item.category }) {
+            // Same category: replace
+            pendingSelections[existingIndex] = item
+        } else {
+            // New category: add if under limit
+            let totalCount = pendingSelections.count + viewModel.uploadedClothingImages.count
+            if totalCount < TryOnViewModel.maxClothingItems {
+                pendingSelections.append(item)
+            }
+        }
+    }
+
+    private func confirmSelections() {
+        viewModel.selectedClothingItems = pendingSelections
+        viewModel.clearResult()
+        dismiss()
     }
 }
 

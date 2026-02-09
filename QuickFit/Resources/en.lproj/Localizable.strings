@@ -202,6 +202,41 @@
 "error_server" = "Server error: %@";
 "error_unauthorized" = "Unauthorized, please log in again";
 
+// MARK: - Subcategories - Tops
+"subcategory_t_shirt" = "T-Shirt";
+"subcategory_shirt" = "Shirt";
+"subcategory_sweater" = "Sweater";
+"subcategory_hoodie" = "Hoodie";
+"subcategory_polo" = "Polo";
+"subcategory_tank" = "Tank Top";
+
+// MARK: - Subcategories - Bottoms
+"subcategory_jeans" = "Jeans";
+"subcategory_casual_pants" = "Casual Pants";
+"subcategory_dress_pants" = "Dress Pants";
+"subcategory_shorts" = "Shorts";
+"subcategory_sports_pants" = "Sports Pants";
+"subcategory_skirt" = "Skirt";
+
+// MARK: - Subcategories - Outerwear
+"subcategory_jacket" = "Jacket";
+"subcategory_coat" = "Coat";
+"subcategory_blazer" = "Blazer";
+"subcategory_down_jacket" = "Down Jacket";
+
+// MARK: - Subcategories - Dresses
+"subcategory_casual_dress" = "Casual Dress";
+"subcategory_formal_dress" = "Formal Dress";
+
+// MARK: - Multi-Clothing
+"tryon_add_clothing" = "Add Clothing";
+"tryon_max_clothing" = "Max 3 items";
+"tryon_clothing_count" = "%d items selected";
+"tryon_confirm_selection" = "Confirm(%d)";
+"tryon_selected_items" = "Selected Items";
+"wardrobe_subcategory" = "Subcategory";
+"wardrobe_subcategory_none" = "None";
+
 // MARK: - Measurements
 "measurements_not_filled" = "Not filled";
 "measurements_bust" = "Bust %d";
